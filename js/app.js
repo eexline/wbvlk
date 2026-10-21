@@ -1068,22 +1068,8 @@ function buildScanResultHtml(signal, options = {}) {
     }
 
     let resultMetaHtml = "";
-    if (hasResult && !screenshot) {
-        if (signal.exitPrice != null && signal.entryPrice != null) {
-            resultMetaHtml =
-                '<p class="scan-result__check-meta">' +
-                t("signal.entry") +
-                ": " +
-                Number(signal.entryPrice).toFixed(5) +
-                " → " +
-                t("signal.exit") +
-                ": " +
-                Number(signal.exitPrice).toFixed(5) +
-                (signal.changePct != null ? " (" + signal.changePct + "%)" : "") +
-                "</p>";
-        } else if (signal.isOtc) {
-            resultMetaHtml = '<p class="scan-result__check-meta">' + t("signal.otcMode") + "</p>";
-        }
+    if (hasResult && !screenshot && signal.isOtc) {
+        resultMetaHtml = '<p class="scan-result__check-meta">' + t("signal.otcMode") + "</p>";
     }
 
     return (
