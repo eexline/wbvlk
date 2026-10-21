@@ -10,5 +10,11 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/api/leaderboard", "destination": "/api/proxy?path=leaderboard" },
+    { "source": "/api/quote", "destination": "/api/proxy?path=quote" },
+    { "source": "/api/check", "destination": "/api/proxy?path=check" },
+    { "source": "/api/admin/:path*", "destination": "/api/proxy?path=admin/:path*" }
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "name": "wbvlk-web",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}
