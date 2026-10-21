@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#070b14" id="themeColorMeta">
+    <title>MOGET TRADE BOT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem("kvsm-theme");
+                if (theme === "light" || theme === "dark") {
+                    document.documentElement.setAttribute("data-theme", theme);
+                    if (theme === "light") {
+                        document.getElementById("themeColorMeta").setAttribute("content", "#eef2f7");
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+        <div class="spinner"></div>
+        <p class="loading-text" id="loadingText" data-i18n="loading.market">Analyzing market...</p>
+    </div>
+
+    <div class="app-container">
+        <header class="app-chrome app-chrome--top">
+            <div class="chrome-bar">
+                <button type="button" class="brand" id="brandHomeBtn" aria-label="Go to home">
+                    <div class="brand-mark" aria-hidden="true">
+                        <img class="brand-mark__logo brand-mark__logo--dark" src="img/moget_blue_cyan_bg_black_emblem.svg" alt="" width="38" height="38">
+                        <img class="brand-mark__logo brand-mark__logo--light" src="img/moget_gold_icon_final.svg" alt="" width="38" height="38">
+                    </div>
+                    <div class="brand-copy">
+                        <span class="brand-name">MOGET</span>
+                        <span class="brand-tagline" data-i18n="brand.tagline">Trade Bot</span>
+                    </div>
+                </button>
+                <div class="chrome-actions">
+                    <button type="button" class="theme-btn" id="themeBtn" data-i18n-aria="theme.toggle" aria-label="Toggle theme">
+                        <!-- Heroicons outline moon -->
+                        <svg class="theme-btn__icon theme-btn__icon--moon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <!-- Heroicons outline sun -->
+                        <svg class="theme-btn__icon theme-btn__icon--sun" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="lang-btn" id="langBtn" data-i18n-aria="lang.change" aria-label="Change language">
+                        <img class="lang-btn__flag" id="langBtnFlag" src="img/gb.svg" alt="" width="28" height="28">
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content" id="mainContent">
+            <section id="homeScreen" class="step-container active">
+                <header class="signals-hub">
+                    <div>
+                        <p class="signals-hub__label" data-i18n="home.label">Trade signals</p>
+                        <h2 class="signals-hub__title" data-i18n="home.title">How do you want to trade?</h2>
+                        <p class="signals-hub__sub" data-i18n="home.sub">Pick a method — AI generates direction in seconds</p>
+                    </div>
+                    <span class="signals-hub__badge" aria-hidden="true"><i class="fas fa-robot"></i></span>
+                </header>
+                <div class="method-cards">
+                    <article class="method-card method-card--flow" data-method="instrument">
+                        <span class="method-card__icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="method-card__body">
+                            <span class="method-card__title" data-i18n="method.instrument.title">Instrument</span>
+                            <span class="method-card__desc" data-i18n="method.instrument.desc">Asset, pair and timeframe — instant signal</span>
+                        </span>
+                        <span class="method-card__go" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                    </article>
+                    <article class="method-card method-card--shot" data-method="screenshot">
+                        <span class="method-card__icon"><i class="fas fa-camera"></i></span>
+                        <span class="method-card__body">
+                            <span class="method-card__title" data-i18n="method.screenshot.title">Screenshot</span>
+                            <span class="method-card__desc" data-i18n="method.screenshot.desc">Upload a chart — AI reads patterns</span>
+                        </span>
+                        <span class="method-card__go" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                    </article>
+                    <article class="method-card method-card--support" data-method="support">
+                        <span class="method-card__icon"><i class="fas fa-headset"></i></span>
+                        <span class="method-card__body">
+                            <span class="method-card__title" data-i18n="method.support.title">Support</span>
+                            <span class="method-card__desc" data-i18n="method.support.desc">Chat with us in Telegram</span>
+                        </span>
+                        <span class="method-card__go" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                    </article>
+                </div>
+            </section>
+
+            <section id="assetScreen" class="step-container flow-step" data-flow-step="1">
+                <header class="flow-panel">
+                    <p class="flow-panel__step" data-i18n="flow.step1">Step 1 of 3</p>
+                    <h2 class="flow-panel__title" data-i18n="asset.title">Choose market</h2>
+                    <p class="flow-panel__sub" data-i18n="asset.sub">What are you trading today?</p>
+                </header>
+                <div class="flow-step__body">
+                <div class="asset-grid" id="assetGrid">
+                    <article class="asset-card selected" data-asset="forex">
+                        <span class="asset-card__icon"><i class="fas fa-coins"></i></span>
+                        <span class="asset-card__body">
+                            <span class="asset-card__title" data-i18n="asset.forex.title">Forex</span>
+                            <span class="asset-card__sub" data-i18n="asset.forex.sub">Majors & minors</span>
+                        </span>
+                        <span class="asset-card__check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                    </article>
+                    <article class="asset-card" data-asset="crypto">
+                        <span class="asset-card__icon"><i class="fab fa-bitcoin"></i></span>
+                        <span class="asset-card__body">
+                            <span class="asset-card__title" data-i18n="asset.crypto.title">Crypto</span>
+                            <span class="asset-card__sub" data-i18n="asset.crypto.sub">BTC, ETH & more</span>
+                        </span>
+                        <span class="asset-card__check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                    </article>
+                    <article class="asset-card" data-asset="stocks">
+                        <span class="asset-card__icon"><i class="fas fa-building"></i></span>
+                        <span class="asset-card__body">
+                            <span class="asset-card__title" data-i18n="asset.stocks.title">Stocks</span>
+                            <span class="asset-card__sub" data-i18n="asset.stocks.sub">Global shares</span>
+                        </span>
+                        <span class="asset-card__check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                    </article>
+                </div>
+                </div>
+                <div class="flow-footer">
+                    <button type="button" class="btn-primary" id="assetContinueBtn">
+                        <span data-i18n="btn.continue">Continue</span> <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn-secondary flow-back-btn" data-flow-back="home">
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="btn.backSignals">Back to Signals</span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="pairsScreen" class="step-container flow-step" data-flow-step="1">
+                <header class="flow-panel">
+                    <p class="flow-panel__step" data-i18n="flow.step1">Step 1 of 3</p>
+                    <h2 class="flow-panel__title" id="pairsScreenTitle" data-i18n="pairs.forex.title">Currency Pairs</h2>
+                    <p class="flow-panel__sub" id="pairsScreenSubtitle" data-i18n="pairs.forex.sub">Choose your trading pair</p>
+                </header>
+                <div class="flow-step__body">
+                <div class="pair-market-toggle" id="marketKindToggle" hidden>
+                    <button type="button" class="pair-market-btn active" data-market-kind="standard" aria-pressed="true" data-i18n="market.stock">Stock</button>
+                    <button type="button" class="pair-market-btn" data-market-kind="otc" aria-pressed="false" data-i18n="market.otc">OTC</button>
+                </div>
+                <div class="pairs-toolbar">
+                    <div class="search-bar search-bar--compact">
+                        <i class="fas fa-search"></i>
+                        <input type="search" data-i18n-placeholder="pairs.search" id="searchPairsInput" autocomplete="off">
+                    </div>
+                    <span class="pairs-toolbar__count" id="pairsCount"></span>
+                </div>
+                <div class="pairs-list" id="pairsList"></div>
+                </div>
+                <div class="flow-footer">
+                    <button type="button" class="btn-secondary flow-back-btn" data-flow-back="asset">
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="btn.back">Back</span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="timeframeScreen" class="step-container flow-step" data-flow-step="2">
+                <header class="flow-panel">
+                    <p class="flow-panel__step" data-i18n="flow.step2">Step 2 of 3</p>
+                    <h2 class="flow-panel__title" data-i18n="tf.title">Timeframe</h2>
+                    <p class="flow-panel__sub" id="timeframeScreenSub">EUR/USD · pick candle interval</p>
+                </header>
+                <div class="flow-step__body">
+                <div class="tf-panel" id="timeframeSelector"></div>
+                </div>
+                <div class="flow-footer">
+                    <button type="button" class="btn-primary btn-primary--flow" id="generateSignalBtn" data-i18n="signal.generate">
+                        Generate Signal
+                    </button>
+                    <button type="button" class="btn-secondary flow-back-btn" data-flow-back="pairs">
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="btn.back">Back</span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="signalScreen" class="step-container flow-step" data-flow-step="3">
+                <header class="flow-panel">
+                    <p class="flow-panel__step" data-i18n="flow.step3">Step 3 of 3</p>
+                    <h2 class="flow-panel__title" data-i18n="signal.title">Your signal</h2>
+                    <p class="flow-panel__sub" id="signalScreenSub" data-i18n="signal.sub">Live AI direction</p>
+                </header>
+                <div class="flow-step__body">
+                <div id="signalContent"></div>
+                </div>
+                <div class="flow-footer">
+                    <button type="button" class="btn-primary btn-primary--outline" id="newSignalBtn">
+                        <i class="fas fa-rotate"></i> <span data-i18n="signal.new">New Signal</span>
+                    </button>
+                    <button type="button" class="btn-secondary flow-back-btn" data-flow-back="timeframe">
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="btn.back">Back</span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="screenshotScreen" class="step-container">
+                <header class="signals-hub signals-hub--compact" id="screenshotHub">
+                    <div>
+                        <p class="signals-hub__label" data-i18n="shot.label">Screenshot</p>
+                        <h2 class="signals-hub__title" data-i18n="shot.title">Chart analysis</h2>
+                        <p class="signals-hub__sub" data-i18n="shot.sub">Upload your chart for an AI signal</p>
+                    </div>
+                    <span class="signals-hub__badge" aria-hidden="true"><i class="fas fa-camera"></i></span>
+                </header>
+                <div class="screenshot-upload" id="screenshotUpload">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p data-i18n="shot.upload">Tap to upload or drag & drop</p>
+                            <small data-i18n="shot.uploadHint">PNG, JPG up to 10MB</small>
+                        </div>
+                    </div>
+                    <input type="file" class="file-input-hidden" id="fileInput" accept="image/*">
+                    <div class="screenshot-tf" id="screenshotTimeframeWrap" hidden>
+                        <p class="screenshot-tf__label" data-i18n="shot.tf">Timeframe</p>
+                        <div class="tf-panel screenshot-tf__panel" id="screenshotTimeframeSelector"></div>
+                    </div>
+                    <div class="screenshot-actions" id="screenshotActions" hidden>
+                        <button type="button" class="btn-secondary" id="clearScreenshotBtn" data-i18n="btn.clear">Clear</button>
+                        <button type="button" class="btn-primary" id="analyzeScreenshotBtn" data-i18n="btn.analyze">Analyze</button>
+                    </div>
+                    <button type="button" class="btn-secondary screenshot-back-btn" id="screenshotBackBtn">
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="btn.backSignals">Back to Signals</span>
+                    </button>
+                </div>
+                <div id="screenshotResult"></div>
+            </section>
+
+            <section id="educationScreen" class="step-container">
+                <div class="edu-tabs" id="eduCategory">
+                    <button type="button" class="edu-tab active" data-cat="all" data-i18n="edu.tab.all">All</button>
+                    <button type="button" class="edu-tab" data-cat="basics" data-i18n="edu.tab.basics">Basics</button>
+                    <button type="button" class="edu-tab" data-cat="technical" data-i18n="edu.tab.technical">Technical</button>
+                    <button type="button" class="edu-tab" data-cat="risk" data-i18n="edu.tab.risk">Risk</button>
+                </div>
+                <div id="educationList"></div>
+            </section>
+
+            <section id="leadersScreen" class="step-container">
+                <div class="leaderboard-tabs" id="lbTabs">
+                    <button type="button" class="lb-tab active" data-period="today" data-i18n="lb.tab.today">Today</button>
+                    <button type="button" class="lb-tab" data-period="week" data-i18n="lb.tab.week">Week</button>
+                    <button type="button" class="lb-tab" data-period="month" data-i18n="lb.tab.month">Month</button>
+                </div>
+                <div id="leaderboardList"></div>
+            </section>
+
+            <section id="faqScreen" class="step-container">
+                <div class="faq-stack" id="faqList"></div>
+            </section>
+        </main>
+
+        <nav class="app-chrome app-chrome--bottom" id="bottomNav" aria-label="Main navigation">
+            <div class="chrome-bar chrome-bar--nav">
+                <button type="button" class="nav-item active" data-nav="signals">
+                    <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                    <span class="nav-label" data-i18n="nav.signals">Signals</span>
+                </button>
+                <button type="button" class="nav-item" data-nav="education">
+                    <span class="nav-icon"><i class="fas fa-graduation-cap"></i></span>
+                    <span class="nav-label" data-i18n="nav.education">Education</span>
+                </button>
+                <button type="button" class="nav-item" data-nav="leaders">
+                    <span class="nav-icon"><i class="fas fa-trophy"></i></span>
+                    <span class="nav-label" data-i18n="nav.leaders">Leaders</span>
+                </button>
+                <button type="button" class="nav-item" data-nav="faq">
+                    <span class="nav-icon"><i class="fas fa-question-circle"></i></span>
+                    <span class="nav-label" data-i18n="nav.faq">FAQ</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+
+    <div class="lang-modal" id="langModal" role="presentation" aria-hidden="true">
+        <button type="button" class="lang-modal-backdrop" id="langModalBackdrop" data-i18n-aria="lang.close" aria-label="Close"></button>
+        <div class="lang-sheet" role="dialog" aria-modal="true" aria-labelledby="langModalTitle">
+            <div class="lang-sheet-handle" aria-hidden="true"></div>
+            <header class="lang-sheet-head">
+                <div>
+                    <h2 id="langModalTitle" data-i18n="lang.title">Language</h2>
+                    <p data-i18n="lang.choose">Choose your language</p>
+                </div>
+                <button type="button" class="lang-sheet-close" id="langModalClose" data-i18n-aria="lang.close" aria-label="Close">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </header>
+            <div class="lang-list" id="langModalList" role="listbox"></div>
+        </div>
+    </div>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">MOGET Blue Gradient Background Black Emblem</title>
+  <desc id="desc">A rounded-square icon with a vivid blue-to-cyan gradient background and a black geometric MG emblem. Pure vector SVG.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0.04" y1="0.02" x2="0.96" y2="0.98">
+      <stop offset="0" stop-color="#1848E8"/>
+      <stop offset=".25" stop-color="#1268F5"/>
+      <stop offset=".53" stop-color="#078FEF"/>
+      <stop offset=".78" stop-color="#16B8F2"/>
+      <stop offset="1" stop-color="#49DDF4"/>
+    </linearGradient>
+    <linearGradient id="bgSheen" x1="0" y1="0" x2=".85" y2="1">
+      <stop offset="0" stop-color="#B4EFFF" stop-opacity=".35"/>
+      <stop offset=".4" stop-color="#FFFFFF" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#052D9B" stop-opacity=".25"/>
+    </linearGradient>
+    <linearGradient id="black" x1="0.05" y1="0.02" x2=".95" y2=".98">
+      <stop offset="0" stop-color="#242833"/>
+      <stop offset=".42" stop-color="#11141C"/>
+      <stop offset="1" stop-color="#030407"/>
+    </linearGradient>
+    <linearGradient id="blackFacet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#596171" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#05070B" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Pocket Option-inspired blue/cyan gradient tile -->
+  <rect x="18" y="18" width="476" height="476" rx="112" fill="url(#bg)"/>
+  <rect x="19.5" y="19.5" width="473" height="473" rx="110.5" fill="url(#bgSheen)"/>
+  <rect x="21" y="21" width="470" height="470" rx="109" fill="none" stroke="#B8F1FF" stroke-width="3" stroke-opacity=".6"/>
+  <path d="M78 65 Q116 31 174 31 H338 Q405 31 439 75" fill="none" stroke="#D7FAFF" stroke-width="3" stroke-opacity=".34" stroke-linecap="round"/>
+
+  <!-- Black geometric M -->
+  <path d="M112 374 V143
+           Q112 137 118 142
+           L256 268
+           L256 331
+           L183 267
+           V374 Z"
+        fill="url(#black)"/>
+  <path d="M256 268 L400 143
+           Q400 139 400 146
+           V197
+           L320 274
+           L256 331 Z"
+        fill="url(#black)"/>
+  <path d="M256 268 L400 143 V190 L320 274 L256 331 Z"
+        fill="url(#blackFacet)"/>
+
+  <!-- Separate lower-right flourish -->
+  <path d="M283 298 H407 V337
+           C407 385 374 414 327 414
+           C291 414 263 395 251 365
+           L303 340
+           C309 356 320 366 337 366
+           C355 366 365 355 365 339
+           V337 H283 Z"
+        fill="url(#black)"/>
+  <path d="M283 298 H407 V337 H365 V337 H283 Z" fill="#252A35" opacity=".65"/>
+</svg>

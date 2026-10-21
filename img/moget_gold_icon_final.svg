@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1248" height="1248" viewBox="0 0 1248 1248" role="img" aria-labelledby="title desc">
+  <title id="title">MOGET Gold Glossy Icon</title>
+  <desc id="desc">Vector recreation of the selected gold MOGET icon with a thin curved top highlight and the dark angular MG monogram.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0.05" y1="0.02" x2="0.95" y2="0.98">
+      <stop offset="0" stop-color="#FFFBA3"/>
+      <stop offset=".19" stop-color="#FFE95A"/>
+      <stop offset=".43" stop-color="#FFD21C"/>
+      <stop offset=".69" stop-color="#F6AA08"/>
+      <stop offset="1" stop-color="#B96800"/>
+    </linearGradient>
+    <linearGradient id="goldGloss" x1="0" y1="0" x2=".9" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".24"/>
+      <stop offset=".45" stop-color="#FFF5A6" stop-opacity=".03"/>
+      <stop offset="1" stop-color="#A85A00" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF8A4"/>
+      <stop offset=".5" stop-color="#FFE45C"/>
+      <stop offset="1" stop-color="#C77A00"/>
+    </linearGradient>
+    <linearGradient id="ink" x1="0.05" y1="0.02" x2=".95" y2=".98">
+      <stop offset="0" stop-color="#1B263C"/>
+      <stop offset=".48" stop-color="#0D1424"/>
+      <stop offset="1" stop-color="#02050B"/>
+    </linearGradient>
+    <linearGradient id="inkFacet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#52617A" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#0D1424" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Transparent outside the rounded tile -->
+  <rect x="40" y="40" width="1168" height="1168" rx="222" fill="url(#gold)"/>
+  <rect x="43" y="43" width="1162" height="1162" rx="219" fill="url(#goldGloss)"/>
+  <rect x="44" y="44" width="1160" height="1160" rx="218" fill="none" stroke="url(#edge)" stroke-width="7"/>
+  <rect x="55" y="55" width="1138" height="1138" rx="207" fill="none" stroke="#FFF9CB" stroke-opacity=".2" stroke-width="2"/>
+
+  <!-- Thin curved highlight -->
+  <path d="M142 220 C260 93 422 84 624 84 C826 84 988 93 1106 220"
+        fill="none" stroke="#FFFBE7" stroke-width="10" stroke-linecap="round" opacity=".86"/>
+  <path d="M151 228 C271 113 428 105 624 105 C820 105 977 113 1097 228"
+        fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".28"/>
+
+  <!-- Angular M emblem; separate lower curved flourish to keep the MG reading distinct -->
+  <path d="M284 882 V326 Q284 315 296 324 L624 586 L624 758 L435 608 V882 Z" fill="url(#ink)"/>
+  <path d="M286 326 Q284 315 296 324 L624 586 L667 621 L624 667 L435 529 L286 417 Z" fill="url(#inkFacet)"/>
+  <path d="M624 586 L927 324 Q938 315 938 329 V466 L757 620 L624 758 Z" fill="url(#ink)"/>
+  <path d="M684 686 H960 V778 H684 Z" fill="url(#ink)"/>
+  <path d="M684 686 H960 V778 H684 Z" fill="url(#inkFacet)"/>
+  <path d="M960 778 V801 C960 905 888 973 783 973 C706 973 647 936 610 866 L714 814 C731 851 752 871 790 871 C829 871 851 844 851 807 V801 H960 Z" fill="url(#ink)"/>
+  <path d="M624 586 L927 324 V420 L757 620 L624 758 Z" fill="url(#inkFacet)"/>
+</svg>
