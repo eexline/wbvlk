@@ -807,27 +807,36 @@ const TIMEFRAME_GROUPS = [
     { labelKey: "tf.minutes", items: ["1m", "3m", "5m", "15m", "30m"] }
 ];
 
-/** Акции: только минуты, без секунд. */
-const STOCKS_TIMEFRAME_GROUPS = [
+/** Только минуты (акции + режим «Биржа/Stock»; секунды — только OTC). */
+const MINUTES_ONLY_TIMEFRAME_GROUPS = [
     { labelKey: "tf.minutes", items: ["1m", "3m", "5m", "15m", "30m"] }
 ];
 
 const SECOND_TIMEFRAMES = new Set(["5s", "10s", "15s", "30s"]);
-const STOCKS_ALLOWED_TF = new Set(["1m", "3m", "5m", "15m", "30m"]);
+const MINUTES_ONLY_TF = new Set(["1m", "3m", "5m", "15m", "30m"]);
+
+/** Секунды только у Forex/Crypto OTC. Stocks и Биржа (standard) — минуты. */
+function usesMinutesOnlyTimeframes(asset = selectedAsset) {
+    if (asset === "stocks") return true;
+    if (PAIR_MARKET_TOGGLE_ASSETS.includes(asset) && getPairMarketKind(asset) === "standard") {
+        return true;
+    }
+    return false;
+}
 
 function getTimeframeGroupsForAsset(asset = selectedAsset) {
-    if (asset === "stocks") {
-        return STOCKS_TIMEFRAME_GROUPS.map((g) => ({
+    if (usesMinutesOnlyTimeframes(asset)) {
+        return MINUTES_ONLY_TIMEFRAME_GROUPS.map((g) => ({
             labelKey: g.labelKey,
-            items: g.items.filter((tf) => STOCKS_ALLOWED_TF.has(tf))
+            items: g.items.slice()
         }));
     }
     return TIMEFRAME_GROUPS;
 }
 
 function ensureValidTimeframeForAsset(asset = selectedAsset) {
-    if (asset !== "stocks") return;
-    if (!STOCKS_ALLOWED_TF.has(selectedTimeframe)) {
+    if (!usesMinutesOnlyTimeframes(asset)) return;
+    if (!MINUTES_ONLY_TF.has(selectedTimeframe)) {
         selectedTimeframe = "1m";
     }
 }
@@ -845,11 +854,11 @@ function createTimeframeChip(tf, selected, onSelect) {
 function renderTimeframePanel(container, selected, onSelect, groups = TIMEFRAME_GROUPS) {
     if (!container) return;
     container.innerHTML = "";
+    const minutesOnly = usesMinutesOnlyTimeframes();
 
     groups.forEach((group) => {
         const items = (group.items || []).filter((tf) => {
-            // страховка: для акций секунды никогда не рисуем
-            if (selectedAsset === "stocks" && SECOND_TIMEFRAMES.has(tf)) return false;
+            if (minutesOnly && SECOND_TIMEFRAMES.has(tf)) return false;
             return true;
         });
         if (!items.length) return;
@@ -878,8 +887,9 @@ function renderTimeframes() {
     ensureValidTimeframeForAsset();
     updateTimeframeScreenSub();
     const groups = getTimeframeGroupsForAsset(selectedAsset);
+    const minutesOnly = usesMinutesOnlyTimeframes();
     renderTimeframePanel(container, selectedTimeframe, (tf) => {
-        if (selectedAsset === "stocks" && SECOND_TIMEFRAMES.has(tf)) return;
+        if (minutesOnly && SECOND_TIMEFRAMES.has(tf)) return;
         selectedTimeframe = tf;
         renderTimeframes();
         updateSignalCooldownUI();
@@ -1748,10 +1758,12 @@ function bindEvents() {
         const btn = e.target.closest("[data-market-kind]");
         if (!btn || !PAIR_MARKET_TOGGLE_ASSETS.includes(selectedAsset)) return;
         setPairMarketKind(btn.dataset.marketKind);
+        ensureValidTimeframeForAsset();
         updateMarketToggleUI();
         syncSelectedPairWithCurrentList();
         updatePairsScreenHeader();
         renderPairsList();
+        renderTimeframes();
     });
 
     $("#assetContinueBtn")?.addEventListener("click", showPairsScreen);
