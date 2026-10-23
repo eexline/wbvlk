@@ -1077,6 +1077,7 @@ function buildScanResultHtml(signal, options = {}) {
         mod +
         resultMod +
         '">' +
+        '<div class="shine-border" aria-hidden="true" style="--border-width:1px;--duration:10s"></div>' +
         bannerHtml +
         '<div class="scan-result__body">' +
         pairLineHtml +
