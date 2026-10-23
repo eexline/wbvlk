@@ -914,6 +914,41 @@ async function fetchEntryQuote(pair, asset) {
     });
 }
 
+const ACCESS_TIER_KEY = "moget_access_tier";
+
+/** START | platinum — from bot WebApp URL (?tier=) or stored session. */
+function getAccessTier() {
+    try {
+        const params = new URLSearchParams(location.search || "");
+        const fromUrl = (params.get("tier") || "").toLowerCase().trim();
+        if (fromUrl === "platinum" || fromUrl === "vip") {
+            sessionStorage.setItem(ACCESS_TIER_KEY, "platinum");
+            return "platinum";
+        }
+        if (fromUrl === "start" || fromUrl === "basic") {
+            sessionStorage.setItem(ACCESS_TIER_KEY, "start");
+            return "start";
+        }
+        const stored = (sessionStorage.getItem(ACCESS_TIER_KEY) || "").toLowerCase();
+        if (stored === "platinum") return "platinum";
+    } catch (_) {
+        /* private mode */
+    }
+    return "start";
+}
+
+function isPlatinumAccess() {
+    return getAccessTier() === "platinum";
+}
+
+/** START: 58–67%, PLATINUM: 77–89% */
+function randomConfidenceForTier() {
+    if (isPlatinumAccess()) {
+        return Math.floor(Math.random() * 13) + 77;
+    }
+    return Math.floor(Math.random() * 10) + 58;
+}
+
 function generateRandomSignal() {
     const direction = Math.random() > 0.5 ? "up" : "down";
     const patterns = getSignalPatterns();
@@ -929,7 +964,8 @@ function generateRandomSignal() {
         direction,
         pattern: patterns[Math.floor(Math.random() * patterns.length)],
         reason: reasons[Math.floor(Math.random() * reasons.length)],
-        confidence: Math.floor(Math.random() * 20) + 70,
+        confidence: randomConfidenceForTier(),
+        accessTier: getAccessTier(),
         trendKey: pickRandomItems(direction === "up" ? upTrends : downTrends, 1)[0],
         momentumKey: pickRandomItems(direction === "up" ? upMomentum : downMomentum, 1)[0],
         indicatorKeys: pickRandomItems(SIGNAL_INDICATOR_KEYS, indicatorCount),
@@ -1868,9 +1904,21 @@ function refreshAppLanguage() {
 
 window.refreshAppLanguage = refreshAppLanguage;
 
+function updateAccessTierBadge() {
+    const el = document.getElementById("accessTierBadge");
+    if (!el) return;
+    const tier = getAccessTier();
+    const platinum = tier === "platinum";
+    el.dataset.tier = platinum ? "platinum" : "start";
+    el.textContent = platinum ? "PLATINUM" : "START";
+    el.setAttribute("aria-label", platinum ? "PLATINUM access" : "START access");
+}
+
 function init() {
     initTheme();
     initI18n();
+    getAccessTier();
+    updateAccessTierBadge();
     initTelegramWebApp();
     bindEvents();
     renderPairsList();
