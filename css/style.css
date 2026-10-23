@@ -326,6 +326,47 @@ body::before {
     letter-spacing: 0.08em;
 }
 
+.access-tier {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 9px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    user-select: none;
+}
+
+.access-tier[data-tier="start"] {
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #cbd5e1;
+    background: rgba(148, 163, 184, 0.1);
+}
+
+.access-tier[data-tier="platinum"] {
+    border-color: rgba(212, 175, 55, 0.45);
+    color: #f0d78c;
+    background: rgba(212, 175, 55, 0.12);
+}
+
+[data-theme="light"] .access-tier[data-tier="start"] {
+    border-color: rgba(100, 116, 139, 0.35);
+    color: #475569;
+    background: rgba(100, 116, 139, 0.08);
+}
+
+[data-theme="light"] .access-tier[data-tier="platinum"] {
+    border-color: rgba(180, 140, 40, 0.4);
+    color: #92700f;
+    background: rgba(212, 175, 55, 0.14);
+}
+
 /* Main */
 .main-content {
     padding: var(--header-offset) 20px 20px;
