@@ -1904,21 +1904,10 @@ function refreshAppLanguage() {
 
 window.refreshAppLanguage = refreshAppLanguage;
 
-function updateAccessTierBadge() {
-    const el = document.getElementById("accessTierBadge");
-    if (!el) return;
-    const tier = getAccessTier();
-    const platinum = tier === "platinum";
-    el.dataset.tier = platinum ? "platinum" : "start";
-    el.textContent = platinum ? "PLATINUM" : "START";
-    el.setAttribute("aria-label", platinum ? "PLATINUM access" : "START access");
-}
-
 function init() {
     initTheme();
     initI18n();
     getAccessTier();
-    updateAccessTierBadge();
     initTelegramWebApp();
     bindEvents();
     renderPairsList();
