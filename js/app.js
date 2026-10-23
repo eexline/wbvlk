@@ -805,17 +805,27 @@ const TIMEFRAME_GROUPS = [
     { labelKey: "tf.minutes", items: ["1m", "3m", "5m", "15m", "30m"] }
 ];
 
+/** Акции: только минуты, без секунд. */
+const STOCKS_TIMEFRAME_GROUPS = [
+    { labelKey: "tf.minutes", items: ["1m", "3m", "5m", "15m", "30m"] }
+];
+
 const SECOND_TIMEFRAMES = new Set(["5s", "10s", "15s", "30s"]);
+const STOCKS_ALLOWED_TF = new Set(["1m", "3m", "5m", "15m", "30m"]);
 
 function getTimeframeGroupsForAsset(asset = selectedAsset) {
     if (asset === "stocks") {
-        return TIMEFRAME_GROUPS.filter((g) => g.labelKey !== "tf.seconds");
+        return STOCKS_TIMEFRAME_GROUPS.map((g) => ({
+            labelKey: g.labelKey,
+            items: g.items.filter((tf) => STOCKS_ALLOWED_TF.has(tf))
+        }));
     }
     return TIMEFRAME_GROUPS;
 }
 
 function ensureValidTimeframeForAsset(asset = selectedAsset) {
-    if (asset === "stocks" && SECOND_TIMEFRAMES.has(selectedTimeframe)) {
+    if (asset !== "stocks") return;
+    if (!STOCKS_ALLOWED_TF.has(selectedTimeframe)) {
         selectedTimeframe = "1m";
     }
 }
@@ -835,6 +845,13 @@ function renderTimeframePanel(container, selected, onSelect, groups = TIMEFRAME_
     container.innerHTML = "";
 
     groups.forEach((group) => {
+        const items = (group.items || []).filter((tf) => {
+            // страховка: для акций секунды никогда не рисуем
+            if (selectedAsset === "stocks" && SECOND_TIMEFRAMES.has(tf)) return false;
+            return true;
+        });
+        if (!items.length) return;
+
         const section = document.createElement("section");
         section.className = "tf-group";
 
@@ -844,7 +861,7 @@ function renderTimeframePanel(container, selected, onSelect, groups = TIMEFRAME_
 
         const grid = document.createElement("div");
         grid.className = "tf-grid";
-        group.items.forEach((tf) => grid.appendChild(createTimeframeChip(tf, selected, onSelect)));
+        items.forEach((tf) => grid.appendChild(createTimeframeChip(tf, selected, onSelect)));
 
         section.appendChild(label);
         section.appendChild(grid);
@@ -858,11 +875,13 @@ function renderTimeframes() {
 
     ensureValidTimeframeForAsset();
     updateTimeframeScreenSub();
+    const groups = getTimeframeGroupsForAsset(selectedAsset);
     renderTimeframePanel(container, selectedTimeframe, (tf) => {
+        if (selectedAsset === "stocks" && SECOND_TIMEFRAMES.has(tf)) return;
         selectedTimeframe = tf;
         renderTimeframes();
         updateSignalCooldownUI();
-    }, getTimeframeGroupsForAsset());
+    }, groups);
 }
 
 function renderScreenshotTimeframes() {
