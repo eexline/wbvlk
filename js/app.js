@@ -172,7 +172,7 @@ const cryptoOtcPairs = mapOtcPairRows(OTC_CRYPTO_ROWS);
 
 const PAIR_MARKET_TOGGLE_ASSETS = ["forex", "crypto"];
 
-const timeframes = ["5s", "10s", "15s", "30s", "1m", "3m", "5m", "15m"];
+const timeframes = ["5s", "10s", "15s", "30s", "1m", "3m", "5m", "15m", "30m"];
 
 const TIMEFRAME_COOLDOWN_MS = {
     "5s": 5 * 1000,
@@ -182,7 +182,8 @@ const TIMEFRAME_COOLDOWN_MS = {
     "1m": 60 * 1000,
     "3m": 3 * 60 * 1000,
     "5m": 5 * 60 * 1000,
-    "15m": 15 * 60 * 1000
+    "15m": 15 * 60 * 1000,
+    "30m": 30 * 60 * 1000
 };
 
 const ASSET_META = {
@@ -801,8 +802,23 @@ function updateTimeframeScreenSub() {
 
 const TIMEFRAME_GROUPS = [
     { labelKey: "tf.seconds", items: ["5s", "10s", "15s", "30s"] },
-    { labelKey: "tf.minutes", items: ["1m", "3m", "5m", "15m"] }
+    { labelKey: "tf.minutes", items: ["1m", "3m", "5m", "15m", "30m"] }
 ];
+
+const SECOND_TIMEFRAMES = new Set(["5s", "10s", "15s", "30s"]);
+
+function getTimeframeGroupsForAsset(asset = selectedAsset) {
+    if (asset === "stocks") {
+        return TIMEFRAME_GROUPS.filter((g) => g.labelKey !== "tf.seconds");
+    }
+    return TIMEFRAME_GROUPS;
+}
+
+function ensureValidTimeframeForAsset(asset = selectedAsset) {
+    if (asset === "stocks" && SECOND_TIMEFRAMES.has(selectedTimeframe)) {
+        selectedTimeframe = "1m";
+    }
+}
 
 function createTimeframeChip(tf, selected, onSelect) {
     const el = document.createElement("button");
@@ -814,11 +830,11 @@ function createTimeframeChip(tf, selected, onSelect) {
     return el;
 }
 
-function renderTimeframePanel(container, selected, onSelect) {
+function renderTimeframePanel(container, selected, onSelect, groups = TIMEFRAME_GROUPS) {
     if (!container) return;
     container.innerHTML = "";
 
-    TIMEFRAME_GROUPS.forEach((group) => {
+    groups.forEach((group) => {
         const section = document.createElement("section");
         section.className = "tf-group";
 
@@ -840,12 +856,13 @@ function renderTimeframes() {
     const container = $("#timeframeSelector");
     if (!container) return;
 
+    ensureValidTimeframeForAsset();
     updateTimeframeScreenSub();
     renderTimeframePanel(container, selectedTimeframe, (tf) => {
         selectedTimeframe = tf;
         renderTimeframes();
         updateSignalCooldownUI();
-    });
+    }, getTimeframeGroupsForAsset());
 }
 
 function renderScreenshotTimeframes() {
@@ -1657,6 +1674,7 @@ function bindEvents() {
             } else {
                 selectedPair = ASSET_META[selectedAsset].defaultPair;
             }
+            ensureValidTimeframeForAsset();
             updateAssetCards();
         });
     });
