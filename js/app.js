@@ -1,5 +1,7 @@
-/** Telegram support chat — change to your @username or bot link */
-const SUPPORT_TELEGRAM_URL = "https://t.me/";
+/** Fallback if bot URL /api/config unavailable */
+const SUPPORT_TELEGRAM_URL_FALLBACK = "https://t.me/";
+const SUPPORT_URL_KEY = "moget_support_url";
+let supportTelegramUrl = SUPPORT_TELEGRAM_URL_FALLBACK;
 
 /**
  * Trade API base.
@@ -952,6 +954,50 @@ async function fetchEntryQuote(pair, asset) {
 
 const ACCESS_TIER_KEY = "moget_access_tier";
 
+function normalizeSupportUrl(raw) {
+    let u = String(raw || "").trim();
+    if (!u) return "";
+    if (u.startsWith("http://t.me/")) u = "https://t.me/" + u.slice("http://t.me/".length);
+    return u;
+}
+
+/** Support link from bot (?support=) → session → /api/config → fallback. */
+function getSupportUrl() {
+    try {
+        const params = new URLSearchParams(location.search || "");
+        const fromUrl = normalizeSupportUrl(params.get("support") || "");
+        if (fromUrl) {
+            sessionStorage.setItem(SUPPORT_URL_KEY, fromUrl);
+            supportTelegramUrl = fromUrl;
+            return fromUrl;
+        }
+        const stored = normalizeSupportUrl(sessionStorage.getItem(SUPPORT_URL_KEY) || "");
+        if (stored) {
+            supportTelegramUrl = stored;
+            return stored;
+        }
+    } catch (_) {
+        /* private mode */
+    }
+    return normalizeSupportUrl(supportTelegramUrl) || SUPPORT_TELEGRAM_URL_FALLBACK;
+}
+
+async function loadSupportUrlFromApi() {
+    try {
+        const data = await apiGet("/api/config");
+        const fromApi = normalizeSupportUrl(data && data.support_url);
+        if (!fromApi) return;
+        supportTelegramUrl = fromApi;
+        try {
+            sessionStorage.setItem(SUPPORT_URL_KEY, fromApi);
+        } catch (_) {
+            /* ignore */
+        }
+    } catch (_) {
+        /* offline / old backend */
+    }
+}
+
 /** START | platinum — from bot WebApp URL (?tier=) or stored session. */
 function getAccessTier() {
     try {
@@ -1662,7 +1708,7 @@ function renderFaq() {
 }
 
 function openSupportTelegram() {
-    const url = SUPPORT_TELEGRAM_URL;
+    const url = getSupportUrl();
     const tg = window.Telegram?.WebApp;
     if (tg && typeof tg.openTelegramLink === "function" && /^https:\/\/t\.me\//i.test(url)) {
         tg.openTelegramLink(url);
@@ -1954,6 +2000,8 @@ function init() {
     initTheme();
     initI18n();
     getAccessTier();
+    getSupportUrl();
+    loadSupportUrlFromApi();
     updateAccessTierBadge();
     initTelegramWebApp();
     bindEvents();
