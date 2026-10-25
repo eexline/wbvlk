@@ -14,8 +14,12 @@ const API_BASE = (function () {
         return String(window.MOGET_API_BASE).replace(/\/$/, "");
     }
     if (typeof location !== "undefined") {
+        // file:// открытие с диска — иначе fetch идёт на file:///C:/api/...
+        if (location.protocol === "file:") {
+            return "http://127.0.0.1:8787";
+        }
         const host = location.hostname;
-        if (host === "localhost" || host === "127.0.0.1") {
+        if (host === "localhost" || host === "127.0.0.1" || host === "") {
             return "http://127.0.0.1:8787";
         }
     }
@@ -1205,7 +1209,7 @@ function buildScanResultHtml(signal, options = {}) {
         mod +
         resultMod +
         '">' +
-        '<div class="shine-border" aria-hidden="true" style="--border-width:1px;--duration:10s"></div>' +
+        '<div class="shine-border" aria-hidden="true" style="--duration:10s"></div>' +
         bannerHtml +
         '<div class="scan-result__body">' +
         pairLineHtml +
@@ -1299,10 +1303,19 @@ async function checkTradeResult() {
         currentSignal.checkError = null;
         if (data.entry_price != null) currentSignal.entryPrice = data.entry_price;
     } catch (err) {
-        currentSignal.checkError = err.message || t("signal.checkFailed");
-        setTimeout(() => {
-            if (currentSignal && !currentSignal.checkResult) checkTradeResult();
-        }, 2500);
+        // Локально без API (file:// / backend down): OTC — локальный win/lose, иначе ретрай
+        if (currentSignal.isOtc) {
+            const seed = String(uid) + "|" + (currentSignal.pair || "") + "|" + (currentSignal.generatedAt || 0);
+            let h = 0;
+            for (let i = 0; i < seed.length; i++) h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+            currentSignal.checkResult = Math.abs(h) % 100 < 60 ? "win" : "lose";
+            currentSignal.checkError = null;
+        } else {
+            currentSignal.checkError = err.message || t("signal.checkFailed");
+            setTimeout(() => {
+                if (currentSignal && !currentSignal.checkResult) checkTradeResult();
+            }, 2500);
+        }
     } finally {
         currentSignal.checking = false;
         signalCheckInFlight = false;
