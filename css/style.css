@@ -1346,26 +1346,25 @@ body::before {
     display: block;
 }
 
-.scan-result--up.scan-result--win > .shine-border,
-.scan-result--up.scan-result--lose > .shine-border {
+/* Перелив = только цвет результата */
+.scan-result--win > .shine-border {
     background-image: radial-gradient(
         transparent,
         transparent,
         #34c759,
-        color-mix(in srgb, var(--accent) 80%, #fff),
+        #86efac,
         #34c759,
         transparent,
         transparent
     );
 }
 
-.scan-result--down.scan-result--win > .shine-border,
-.scan-result--down.scan-result--lose > .shine-border {
+.scan-result--lose > .shine-border {
     background-image: radial-gradient(
         transparent,
         transparent,
         #ff453a,
-        color-mix(in srgb, var(--accent) 80%, #fff),
+        #fca5a5,
         #ff453a,
         transparent,
         transparent
@@ -1496,7 +1495,52 @@ body::before {
     display: inline-block;
 }
 
-/* WIN/LOSE не перекрашивают карточку — цвет остаётся от UP/DOWN */
+/* После результата карточка = WIN/LOSE (чтобы не было красной с зелёным переливом) */
+.scan-result--win .scan-result__banner {
+    background: linear-gradient(
+        135deg,
+        rgba(16, 185, 129, 0.22) 0%,
+        rgba(var(--accent-rgb), 0.08) 100%
+    );
+    border-bottom: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+.scan-result--lose .scan-result__banner {
+    background: linear-gradient(
+        135deg,
+        rgba(239, 68, 68, 0.2) 0%,
+        rgba(var(--accent-rgb), 0.06) 100%
+    );
+    border-bottom: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+.scan-result--win .scan-result__verdict {
+    background: rgba(16, 185, 129, 0.16);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #6ee7b7;
+}
+
+.scan-result--lose .scan-result__verdict {
+    background: rgba(239, 68, 68, 0.16);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+}
+
+.scan-result--win .scan-result__signal-text {
+    color: #d1fae5;
+}
+
+.scan-result--win .scan-result__signal-dir {
+    color: #6ee7b7;
+}
+
+.scan-result--lose .scan-result__signal-text {
+    color: #fee2e2;
+}
+
+.scan-result--lose .scan-result__signal-dir {
+    color: #f87171;
+}
 
 .scan-result__body {
     position: relative;
@@ -1551,6 +1595,15 @@ body::before {
 }
 
 .scan-result--down .scan-result__track i {
+    background: var(--red);
+}
+
+/* WIN/LOSE после UP/DOWN — иначе DOWN+WIN остаётся красным */
+.scan-result--win .scan-result__track i {
+    background: var(--green);
+}
+
+.scan-result--lose .scan-result__track i {
     background: var(--red);
 }
 
@@ -1654,6 +1707,25 @@ body::before {
 .scan-result--down .scan-result__chip {
     background: rgba(248, 113, 113, 0.08);
     border-color: rgba(248, 113, 113, 0.2);
+}
+
+.scan-result--win .scan-result__chip {
+    background: rgba(52, 199, 89, 0.1);
+    border-color: rgba(52, 199, 89, 0.28);
+}
+
+.scan-result--lose .scan-result__chip {
+    background: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.2);
+}
+
+/* После результата: обводка = WIN/LOSE, не UP/DOWN (иначе красный бордюр под зелёным shine) */
+.scan-result--win {
+    border-color: rgba(52, 199, 89, 0.55);
+}
+
+.scan-result--lose {
+    border-color: rgba(255, 69, 58, 0.55);
 }
 
 .scan-result__insight {
@@ -1762,8 +1834,74 @@ body::before {
     color: #b91c1c;
 }
 
-/* Shine по направлению сигнала */
-/* На белом чуть толще — иначе 1px сливается с фоном */
+/* После результата — цвет карточки = WIN/LOSE */
+[data-theme="light"] .scan-result--win .scan-result__banner {
+    background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 48%, #d1fae5 100%);
+    border-bottom: 1px solid rgba(5, 150, 105, 0.22);
+}
+
+[data-theme="light"] .scan-result--lose .scan-result__banner {
+    background: linear-gradient(135deg, #ffffff 0%, #fef2f2 48%, #fecaca 100%);
+    border-bottom: 1px solid rgba(220, 38, 38, 0.22);
+}
+
+[data-theme="light"] .scan-result--win .scan-result__verdict {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(5, 150, 105, 0.35);
+    color: #059669;
+    box-shadow: none;
+}
+
+[data-theme="light"] .scan-result--lose .scan-result__verdict {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    color: #dc2626;
+    box-shadow: none;
+}
+
+[data-theme="light"] .scan-result--win .scan-result__verdict i {
+    color: #059669;
+}
+
+[data-theme="light"] .scan-result--lose .scan-result__verdict i {
+    color: #dc2626;
+}
+
+[data-theme="light"] .scan-result--win .scan-result__signal-text {
+    color: #064e3b;
+}
+
+[data-theme="light"] .scan-result--lose .scan-result__signal-text {
+    color: #7f1d1d;
+}
+
+[data-theme="light"] .scan-result--win .scan-result__signal-dir {
+    color: #047857;
+}
+
+[data-theme="light"] .scan-result--lose .scan-result__signal-dir {
+    color: #b91c1c;
+}
+
+[data-theme="light"] .scan-result--win .scan-result__track i {
+    background: #10b981;
+}
+
+[data-theme="light"] .scan-result--lose .scan-result__track i {
+    background: #ef4444;
+}
+
+[data-theme="light"] .scan-result--win .scan-result__chip {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(5, 150, 105, 0.28);
+}
+
+[data-theme="light"] .scan-result--lose .scan-result__chip {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(220, 38, 38, 0.28);
+}
+
+/* На белом чуть толще; цвет = результат (WIN/LOSE) */
 [data-theme="light"] .scan-result--win > .shine-border,
 [data-theme="light"] .scan-result--lose > .shine-border {
     z-index: 3;
@@ -1772,8 +1910,7 @@ body::before {
     background-size: 300% 300%;
 }
 
-[data-theme="light"] .scan-result--up.scan-result--win > .shine-border,
-[data-theme="light"] .scan-result--up.scan-result--lose > .shine-border {
+[data-theme="light"] .scan-result--win > .shine-border {
     background-image: radial-gradient(
         transparent,
         transparent,
@@ -1786,8 +1923,7 @@ body::before {
     );
 }
 
-[data-theme="light"] .scan-result--down.scan-result--win > .shine-border,
-[data-theme="light"] .scan-result--down.scan-result--lose > .shine-border {
+[data-theme="light"] .scan-result--lose > .shine-border {
     background-image: radial-gradient(
         transparent,
         transparent,
